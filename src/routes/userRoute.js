@@ -9,6 +9,7 @@ const {
   userDetails,
   activePermission,
   deleteSomeOne,
+  sendCredentials,
 } = require("../controller/userController");
 const multer = require("multer");
 const { body } = require("express-validator");
@@ -58,4 +59,5 @@ router.get("/alluser", verifyTokenAndAdmin, listofAlluser);
 router.get("/user/:id", verifyTokenAndAdmin, userDetails);
 router.patch("/user/:id", verifyTokenAndAdmin, activePermission);
 router.delete("/deleteUser", verifyTokenAndAdmin, deleteSomeOne);
+router.post("/send/credential", verifyTokenAndAdmin, sendCredentials);
 module.exports = router;

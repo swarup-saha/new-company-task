@@ -2,6 +2,7 @@ const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const { findOneAndDelete } = require("../models/User");
+const { sendMail } = require("../utils/emailUtil");
 
 // registration process
 const regisTration = async (req, res) => {
@@ -160,6 +161,16 @@ const deleteSomeOne = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+const sendCredentials = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    sendMail(email, password);
+    res.status(200).json({ message: "email send successfully!" });
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   regisTration,
   login,
@@ -170,4 +181,5 @@ module.exports = {
   userDetails,
   activePermission,
   deleteSomeOne,
+  sendCredentials,
 };
