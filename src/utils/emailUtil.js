@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
 export const sendMail = async (emailTo, subject, text, html, file) => {
   try {
     let defaultmailOption = {
-      from: "no-reply@kesowa.com",
+      from: "no-reply@jpg.com",
       to: emailTo,
       subject: subject,
       text: text,
