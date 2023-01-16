@@ -2,19 +2,23 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const verifyToken = async (req, res, next) => {
-  const authHeader = req.headers.token;
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-    const decode = await jwt.verify(token, process.env.Secret);
-    let user = await User.findOne({ _id: decode._id, "tokens.token": token });
-    if (!user) return res.json(403).json({ message: "You are not login!" });
-    else {
-      req.token = token;
-      req.user = user;
-      next();
+  try {
+    const authHeader = req.headers.token;
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+      const decode = await jwt.verify(token, process.env.Secret);
+      let user = await User.findOne({ _id: decode._id, "tokens.token": token });
+      if (!user) return res.status(403).json({ message: "You are not login!" });
+      else {
+        req.token = token;
+        req.user = user;
+        next();
+      }
+    } else {
+      return res.status(401).json("You are not authenticated!.");
     }
-  } else {
-    return res.status(401).json("You are not authenticated!.");
+  } catch (error) {
+    console.log(error);
   }
 };
 

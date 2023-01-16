@@ -10,7 +10,7 @@ const regisTration = async (req, res) => {
     email: req.body.email,
     password: CryptoJS.AES.encrypt(req.body.password, process.env.Secret),
     phoneNo: req.body.phoneNo,
-    avatar: `/images/${req.file.filename}`,
+    avatar: `/images/${req.file?.filename}`,
     isAdmin: req.body.isAdmin ?? false,
   });
 
@@ -57,23 +57,24 @@ const login = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const updates = Object.keys(req.body);
-  const file = Object.keys(req.file);
-  updates += file;
+  if (req.file?.fieldname) updates.push("avatar");
   const allowedUpadates = ["name", "phoneNo", "avatar"];
   const isValidUpdates = updates.every((update) =>
     allowedUpadates.includes(update)
   );
-
   if (!isValidUpdates) {
-    res.status(403).send("Invalid body pass which is not exist");
+    return res.status(403).json("Invalid body pass which is not exist");
   }
   try {
+    let obj = {};
     updates.forEach((update) => {
-      if (update === "avatar") req.user[update] = req.file[update];
-      else req.user[update] = req.body[update];
+      if (update === "avatar") obj[update] = `/images/${req.file.filename}`;
+      else obj[update] = req.body[update];
     });
-    await req.user.save();
-    res.status(200).send(req.user);
+    const data = await User.findOneAndUpdate({ _id: req.params.id }, obj, {
+      new: true,
+    });
+    res.status(200).send(data);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -105,7 +106,7 @@ const deleteUser = async (req, res) => {
 // listofAlluser
 const listofAlluser = async (req, res) => {
   try {
-    const data = User.find({ isAdmin: false, isActive: true });
+    const data = await User.find({ isAdmin: false, isActive: true });
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -114,7 +115,7 @@ const listofAlluser = async (req, res) => {
 
 const userDetails = async (req, res) => {
   try {
-    const data = User.find({
+    const data = await User.find({
       isAdmin: false,
       isActive: true,
       _id: req.params.id,
@@ -134,14 +135,18 @@ const activePermission = async (req, res) => {
   );
 
   if (!isValidUpdates) {
-    res.status(403).send("Invalid body pass which is not exist");
+    return res.status(403).send("Invalid body pass which is not exist");
   }
   try {
+    let obj = {};
     updates.forEach((update) => {
-      req.user[update] = req.body[update];
+      obj[update] = req.body[update];
     });
-    await req.user.save();
-    res.status(200).send(req.user);
+    // await req.user.save();
+    const data = await User.findOneAndUpdate({ _id: req.params.id }, obj, {
+      new: true,
+    });
+    res.status(200).send(data);
   } catch (error) {
     res.status(400).send(error);
   }

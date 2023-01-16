@@ -47,7 +47,7 @@ router.post(
 
 // update
 router.patch(
-  "/proile/update/:id",
+  "/profile/update/:id",
   upload.single("avatar"),
   verifyTokenAndAutherization,
   updateUserProfile
