@@ -5,11 +5,15 @@ const {
   deleteUser,
   logoutUser,
   updateUserProfile,
+  listofAlluser,
 } = require("../controller/userController");
 const multer = require("multer");
 const { body } = require("express-validator");
 const { multerStorage } = require("../utils/fileUpload");
-const { verifyTokenAndAutherization } = require("../utils/verifyToken");
+const {
+  verifyTokenAndAutherization,
+  verifyTokenAndAdmin,
+} = require("../utils/verifyToken");
 let upload = multer({ storage: multerStorage("/images") });
 
 // Register
@@ -40,9 +44,11 @@ router.post(
 
 router.patch(
   "/proile/update/:id",
+  upload.single("avatar"),
   verifyTokenAndAutherization,
   updateUserProfile
 );
 router.post("/logout/:id", verifyTokenAndAutherization, logoutUser);
 router.delete("/delete/:id", verifyTokenAndAutherization, deleteUser);
+router.get("/alluser", verifyTokenAndAdmin, listofAlluser);
 module.exports = router;

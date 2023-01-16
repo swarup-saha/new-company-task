@@ -101,10 +101,20 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// listofAlluser
+const listofAlluser = async (req, res) => {
+  try {
+    const data = User.find({ isAdmin: false, isActive: true });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   regisTration,
   login,
   logoutUser,
   deleteUser,
   updateUserProfile,
+  listofAlluser,
 };

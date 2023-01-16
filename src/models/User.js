@@ -7,7 +7,7 @@ let UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     phoneNo: { type: String, required: true },
     avatar: { type: String },
-    isActive: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     isAdmin: { type: Boolean, default: false },
     tokens: [
       {
