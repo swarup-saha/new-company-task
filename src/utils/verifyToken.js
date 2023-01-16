@@ -20,7 +20,11 @@ const verifyToken = async (req, res, next) => {
 
 const verifyTokenAndAutherization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req?.user?.id === req.params.id || req.user.isAdmin) next();
+    if (
+      (req?.user?.id === req.params.id && req.user.isActive) ||
+      req.user.isAdmin
+    )
+      next();
     else {
       res.status(403).json({ message: "You are not allowed to do that!." });
     }

@@ -6,6 +6,8 @@ const {
   logoutUser,
   updateUserProfile,
   listofAlluser,
+  userDetails,
+  activePermission,
 } = require("../controller/userController");
 const multer = require("multer");
 const { body } = require("express-validator");
@@ -42,6 +44,7 @@ router.post(
   login
 );
 
+// update
 router.patch(
   "/proile/update/:id",
   upload.single("avatar"),
@@ -51,4 +54,6 @@ router.patch(
 router.post("/logout/:id", verifyTokenAndAutherization, logoutUser);
 router.delete("/delete/:id", verifyTokenAndAutherization, deleteUser);
 router.get("/alluser", verifyTokenAndAdmin, listofAlluser);
+router.get("/user/:id", verifyTokenAndAdmin, userDetails);
+router.patch("/user/:id", verifyTokenAndAdmin, activePermission);
 module.exports = router;

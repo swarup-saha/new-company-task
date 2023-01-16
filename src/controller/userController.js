@@ -110,6 +110,41 @@ const listofAlluser = async (req, res) => {
     console.log(error);
   }
 };
+
+const userDetails = async (req, res) => {
+  try {
+    const data = User.find({
+      isAdmin: false,
+      isActive: true,
+      _id: req.params.id,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const activePermission = async (req, res) => {
+  const updates = Object.keys(req.body);
+
+  const allowedUpadates = ["isActive"];
+  const isValidUpdates = updates.every((update) =>
+    allowedUpadates.includes(update)
+  );
+
+  if (!isValidUpdates) {
+    res.status(403).send("Invalid body pass which is not exist");
+  }
+  try {
+    updates.forEach((update) => {
+      req.user[update] = req.body[update];
+    });
+    await req.user.save();
+    res.status(200).send(req.user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 module.exports = {
   regisTration,
   login,
@@ -117,4 +152,6 @@ module.exports = {
   deleteUser,
   updateUserProfile,
   listofAlluser,
+  userDetails,
+  activePermission,
 };
