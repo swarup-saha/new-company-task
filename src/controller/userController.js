@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const { findOneAndDelete } = require("../models/User");
 
 // registration process
 const regisTration = async (req, res) => {
@@ -145,6 +146,15 @@ const activePermission = async (req, res) => {
     res.status(400).send(error);
   }
 };
+
+const deleteSomeOne = async (req, res) => {
+  try {
+    await User.findOneAndDelete({ email: req.body.email });
+    res.status(200).json("user deleted successfully!");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
 module.exports = {
   regisTration,
   login,
@@ -154,4 +164,5 @@ module.exports = {
   listofAlluser,
   userDetails,
   activePermission,
+  deleteSomeOne,
 };
